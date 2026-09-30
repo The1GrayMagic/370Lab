@@ -1,12 +1,13 @@
+package lab5;
 
-import javafx.application .Application;
-import javafx.scene.Group;
+import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -15,122 +16,145 @@ import java.util.Random;
 
 
 
-
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.stage.Stage;
+//chatgpt example to use to understand code
 
 
 
 public class App extends Application {
-    static Random random = new Random();
-    Group root = new Group();
-    List<Rectangle> rectangle = new ArrayList<>();
 
+    private final Random random = new Random();
 
+    private final List<String> cards = new ArrayList<>();
+
+    private ImageView cardImage;
+    private Label cardName;
 
 
     @Override
-    public void start(Stage primaryStage) {
-        GridPane gridPane = new GridPane();
-        gridPane.setGridLinesVisible(true); // Makes the grid lines visible
+    public void start(Stage stage) {
 
-        // Define a constraint that makes each column 50 pixels in width
-        ColumnConstraints colConst = new ColumnConstraints(50);
+        // -------------------------
+        // Add card image file names
+        // -------------------------
 
-        // Define a constraint that makes each row 50 pixels in height
-        RowConstraints rowConst = new RowConstraints(50);
+        cards.add("card-diamonds-2.png");
+        cards.add("card-diamonds-3.png");
+        cards.add("card-hearts-king.png");
+        cards.add("card-spades-ace.png");
 
-        // Apply the constraints to all 10 columns and 10 rows
-        for (int i = 0; i < 10; i++) {
-            gridPane.getColumnConstraints().add(colConst);
-            gridPane.getRowConstraints().add(rowConst);
-        }
-
-        rectangle = populateList(10);
-
-        // Set up the Layout
-        root.getChildren().add(gridPane);
-
-        for (Rectangle rectangles : rectangle){
-            root.getChildren().add(rectangles);
-        }
-
-        Button randButton = createRandButton(rectangle);
-        root.getChildren().add(randButton);
+        // Add the rest of your card PNG names here
 
 
+        // -------------------------
+        // Title
+        // -------------------------
+
+        Label title = new Label("Pick a Random Card");
 
 
-        Scene scene = new Scene(root, 500, 600); // Width and height of the scene
-        primaryStage.setTitle("Lab 3: Constrained Grid");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+        // -------------------------
+        // Card Image
+        // -------------------------
 
-    //creates button
-    private Button createRandButton(List<Rectangle> rectangle) {
-        Button randButton = new Button();
-        randButton.setText("Random");
-        randButton.setOnAction(event -> {
-            onRandom();
+        cardImage = new ImageView();
+
+        cardImage.setFitWidth(200);
+        cardImage.setFitHeight(300);
+        cardImage.setPreserveRatio(true);
+
+
+        // -------------------------
+        // Card Name
+        // -------------------------
+
+        cardName = new Label("No card selected");
+
+
+        // -------------------------
+        // Random Card Button
+        // -------------------------
+
+        Button randomButton = new Button("Pick Card");
+
+        randomButton.setOnAction(event -> {
+            pickRandomCard();
         });
 
-        randButton.setLayoutX(220);
-        randButton.setLayoutY(550);
-        return randButton;
+
+        // -------------------------
+        // Layout
+        // -------------------------
+
+        VBox root = new VBox();
+
+        root.setSpacing(20);
+        root.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(
+                title,
+                cardImage,
+                cardName,
+                randomButton
+        );
+
+
+        // -------------------------
+        // Scene
+        // -------------------------
+
+        Scene scene = new Scene(root, 500, 600);
+
+
+        // Optional CSS
+        scene.getStylesheets().add(
+                getClass()
+                        .getResource("/styles.css")
+                        .toExternalForm()
+        );
+
+
+        // -------------------------
+        // Window
+        // -------------------------
+
+        stage.setTitle("Random Card Picker");
+
+        stage.setScene(scene);
+
+        stage.show();
     }
 
-    //creates all rectangles
-    private List<Rectangle> populateList(int numberItems){
-        List<Rectangle> rectangleList = new ArrayList<>();
 
-        for (int i = 0; i < numberItems; i++) {
-            rectangleList.add(getRectangle(i));
-        }
-        return rectangleList;
+    // --------------------------------
+    // Pick Random Card
+    // --------------------------------
+
+    private void pickRandomCard() {
+
+        int randomIndex = random.nextInt(cards.size());
+
+        String selectedCard = cards.get(randomIndex);
+
+
+        Image image = new Image(
+                getClass()
+                        .getResource("/cards/" + selectedCard)
+                        .toExternalForm()
+        );
+
+
+        cardImage.setImage(image);
+
+        cardName.setText(selectedCard);
     }
 
-    //button reset
-    void onRandom() {
-        for (Rectangle changeColor: rectangle)
-        {
-            changeColor.setFill(Color.color(random.nextDouble(),random.nextDouble(),random.nextDouble()));
 
-
-            int startY = random.nextInt(500);
-            changeColor.setY(startY);
-            changeColor.setHeight(500 - startY);
-        }
-
-    }
-
-    // IntelliJ auto into a private static func
-    //creates the rectangle object
-    private static Rectangle getRectangle(int i) {
-
-        int startY = random.nextInt(500); // Randomly select a starting Y position for the rectangle, starting point is at the top of the bar
-        int endY = 500 - startY; // Ensure that the rectangle fits within the 500-pixel height of the scene
-
-        int val = 40+ (i * 45);
-        Rectangle rectangle = new Rectangle(val, startY, 20, endY);
-
-        // Code for coloring rectangle
-        rectangle.setFill(Color.color(random.nextDouble(),random.nextDouble(),random.nextDouble()));       // Interior fill color
-        rectangle.setStroke(Color.BLACK);      // Border color
-        rectangle.setStrokeWidth(3);              // Border width in pixels
-        return rectangle;
-
-    }
+    // --------------------------------
+    // Main
+    // --------------------------------
 
     public static void main(String[] args) {
+
         launch(args);
     }
-
-
 }
