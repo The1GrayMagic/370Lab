@@ -15,8 +15,8 @@ import java.util.List;
 
 public class Grid extends Application {
 
-    private final List<Card> cards = new ArrayList<>();
-
+    private final List<Button> cards = new ArrayList<>();
+    // private final List<Card> cards = new ArrayList<>();
 
 
 
@@ -28,7 +28,9 @@ public class Grid extends Application {
         String namebutton;
         for (int i = 0; i < 52; i++) {
             namebutton = "Randomize " + i;
-            cards.add(new Card(namebutton ));
+           // cards.add(new Card(namebutton ));
+            cards.add(new Button(namebutton ));
+
         }
 
 
@@ -44,7 +46,7 @@ public class Grid extends Application {
         int index =0;
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 13; y++) {
-                grid.add(cards.get(index), x, y);
+                //grid.add(cards.get(index), x, y);
                 index++;
             }
         }
@@ -110,26 +112,27 @@ public class Grid extends Application {
         launch(args);
     }
 
+    public void getListofNames(){
+
+    };
   
 }
 
+//trying to make the way to store and sort the images/cards
+//class Card extends Image {
 
-class Card {
+  //  private String locationDir;
+    //Image image ;
 
-    private String locationDir;
-    Image image ;
+    // public Card (String location){
+         //locationDir = location;
 
-     public Card (String location){
-
-         locationDir = location;
-         image = new Image(
-                 getClass()
-                         .getResource("/cards/" + locationDir)
-                         .toExternalForm()
-         );
-
-
- }
+       //  super(
+               //  getClass()
+          //               .getResource("/cards/" + locationDir)
+        //                 .toExternalForm()
+     //    );
+ //}
 
 
-}
+//}
